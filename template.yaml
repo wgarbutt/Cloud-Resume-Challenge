@@ -19,6 +19,8 @@ Resources:
         Type: "AWS::S3::Bucket"
         Properties:
             BucketName: "www.will-garbutt.me"
+            WebsiteConfiguration: 
+               RedirectAllRequestsTo: !Ref WebsiteBucket
 
     WebsiteBucketPolicy:
         Type: AWS::S3::BucketPolicy
