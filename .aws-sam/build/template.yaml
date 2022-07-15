@@ -17,6 +17,10 @@ Resources:
     Type: AWS::S3::Bucket
     Properties:
       BucketName: www.will-garbutt.me
+      WebsiteConfiguration:
+        RedirectAllRequestsTo:
+          HostName: will-garbutt.me
+          Protocol: https
   WebsiteBucketPolicy:
     Type: AWS::S3::BucketPolicy
     Properties:
@@ -81,3 +85,40 @@ Resources:
     Properties:
       ConnectionName: GitHub
       ProviderType: GitHub
+  VisitorCountTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      AttributeDefinitions:
+      - AttributeName: record_id
+        AttributeType: S
+      TableName: Visitor_Count
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+      KeySchema:
+      - AttributeName: record_id
+        KeyType: HASH
+  LambdaGetVisitor:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: CloudResumeGetVisitor
+      Handler: lambda_function.lambda_handler
+      Architectures:
+      - x86_64
+      Code:
+        S3Bucket: cloudresumelambdafunctions
+        S3Key: getvisitor.zip
+      Role: arn:aws:iam::337461354076:role/CloudResume-LambdaFunctions
+      Runtime: python3.9
+  LambdaAddVisitor:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: CloudResumeAddVisitor
+      Handler: lambda_function.lambda_handler
+      Architectures:
+      - x86_64
+      Code:
+        S3Bucket: cloudresumelambdafunctions
+        S3Key: addvisitor.zip
+      Role: arn:aws:iam::337461354076:role/CloudResume-LambdaFunctions
+      Runtime: python3.9
